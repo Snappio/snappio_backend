@@ -9,6 +9,7 @@ identify==2.5.18
 nodeenv==1.7.0
 platformdirs==3.0.0
 pre-commit==3.1.0
+python-dotenv==1.0.0
 pytz==2022.7.1
 PyYAML==6.0
 sqlparse==0.4.3

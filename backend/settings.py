@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     # third-party apps
     "rest_framework",
     "corsheaders",
+    "backend.snappio.apps.SnappioConfig",
 ]
+
+AUTH_USER_MODEL = "snappio.User"
 
 MIDDLEWARE = [
     # CorsMiddleware must be placed before CommonMiddleware

@@ -16,3 +16,6 @@ db.sqlite3
 # ignore migrations while development
 # add to vcs when stable and deployed and under maintenance
 migrations/
+
+# static files
+site_static/

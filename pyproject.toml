@@ -15,5 +15,6 @@ exclude = '''
 )/
 '''
 [tool.isort]
+line_length = 79
 profile = "black"
 multi_line_output = 3

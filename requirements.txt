@@ -7,6 +7,7 @@ djangorestframework==3.14.0
 filelock==3.9.0
 identify==2.5.18
 nodeenv==1.7.0
+Pillow==9.4.0
 platformdirs==3.0.0
 pre-commit==3.1.0
 python-dotenv==1.0.0

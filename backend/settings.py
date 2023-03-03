@@ -42,11 +42,32 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # third-party apps
     "rest_framework",
+    "rest_framework.authtoken",
     "corsheaders",
     "backend.snappio.apps.SnappioConfig",
 ]
 
 AUTH_USER_MODEL = "snappio.User"
+
+# https://dev.to/djangotricks/how-to-upload-a-file-using-django-rest-framework-1kgf
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    # "DEFAULT_PERMISSION_CLASSES": [
+    #     "rest_framework.permissions.IsAuthenticated",
+    # ],
+    # "DEFAULT_PARSER_CLASSES": [
+    #     "rest_framework.parsers.MultiPartParser",
+    #     "rest_framework.parsers.JSONParser",
+    # ],
+}
+
+STATICFILES_DIRS = [BASE_DIR / "snappio" / "site_static"]
+STATIC_ROOT = BASE_DIR / "snappio" / "static"
+STATIC_URL = "/static/"
+MEDIA_ROOT = BASE_DIR / "snappio" / "media"
+MEDIA_URL = "/media/"
 
 MIDDLEWARE = [
     # CorsMiddleware must be placed before CommonMiddleware

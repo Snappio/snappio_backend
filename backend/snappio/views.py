@@ -3,9 +3,10 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView,
 )
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import User
+from .permissions import IsSameUser
 from .serializers import PostSerializer, UserSerializer
 
 
@@ -17,13 +18,14 @@ class UserList(ListCreateAPIView):
 
 class UserDetail(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly, IsSameUser]
     serializer_class = UserSerializer
 
 
 # Post views
 class PostList(ListCreateAPIView):
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):
@@ -35,7 +37,7 @@ class PostList(ListCreateAPIView):
 
 class PostDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):

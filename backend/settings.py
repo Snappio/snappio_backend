@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 from .environment import env
@@ -62,6 +63,11 @@ REST_FRAMEWORK = {
     #     "rest_framework.parsers.MultiPartParser",
     #     "rest_framework.parsers.JSONParser",
     # ],
+}
+
+SIMPLE_JWT = {
+    # increase access token lifetime
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30)
 }
 
 STATICFILES_DIRS = [BASE_DIR / "snappio" / "site_static"]

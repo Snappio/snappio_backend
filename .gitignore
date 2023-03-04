@@ -18,4 +18,4 @@ db.sqlite3
 migrations/
 
 # static files
-site_static/
+staticfiles/

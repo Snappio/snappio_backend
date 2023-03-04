@@ -25,8 +25,8 @@ version = "0.1.0"
 description = ""
 authors = ["Ananyobrata Pal <ananyo141@gmail.com>"]
 license = "GPLv3"
-readme = "README.md"
-packages = [{include = "snappio_backend"}]
+# readme = "README.md"
+packages = [{include = "backend"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"

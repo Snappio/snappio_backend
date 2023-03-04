@@ -5,5 +5,6 @@ set -o errexit
 
 poetry install
 
-python manage.py collectstatic --no-input
-python manage.py migrate
+poetry run ./manage.py collectstatic --no-input
+poetry run ./manage.py makemigrations snappio
+poetry run ./manage.py migrate

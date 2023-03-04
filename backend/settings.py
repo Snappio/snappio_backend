@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from datetime import timedelta
 from pathlib import Path
+
+import dj_database_url
 
 from .environment import env
 
@@ -27,10 +30,14 @@ SECRET_KEY = env.get("DJANGO_SECRET")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = "RENDER" not in os.environ
 
 ALLOWED_HOSTS = ["*"]
 
+# allow render hostname
+RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -122,6 +129,14 @@ DATABASES = {
     }
 }
 
+# set production postgres configuration if deployed
+if not DEBUG:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=env.POSTGRES_URL,
+            conn_max_age=600,
+        )
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

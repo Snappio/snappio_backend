@@ -56,9 +56,12 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
-    "backend.snappio.apps.SnappioConfig",
+    # local apps
+    "backend.snappio",
+    "backend.chat",
 ]
 
+# Custom user model
 AUTH_USER_MODEL = "snappio.User"
 
 # https://dev.to/djangotricks/how-to-upload-a-file-using-django-rest-framework-1kgf
@@ -83,15 +86,16 @@ SIMPLE_JWT = {
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-
-STATIC_URL = "/static/"
-
 STATICFILES_DIRS = [BASE_DIR / "snappio" / "site_static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_URL = "/static/"
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
+
+# create non-existing directories
+for dir in (STATIC_ROOT, MEDIA_ROOT, *STATICFILES_DIRS):
+    os.makedirs(dir, exist_ok=True)
 
 MIDDLEWARE = [
     # CorsMiddleware must be placed before CommonMiddleware
@@ -130,6 +134,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "backend.wsgi.application"
 ASGI_APPLICATION = "backend.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 
 # Database

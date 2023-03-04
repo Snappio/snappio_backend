@@ -19,3 +19,5 @@ migrations/
 
 # static files
 staticfiles/
+site_static/
+media/

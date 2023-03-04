@@ -42,6 +42,10 @@ if RENDER_EXTERNAL_HOSTNAME:
 # Application definition
 
 INSTALLED_APPS = [
+    # daphne for asgi server
+    "daphne",
+    # channels for runworker command
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -125,6 +129,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "backend.wsgi.application"
+ASGI_APPLICATION = "backend.asgi.application"
 
 
 # Database

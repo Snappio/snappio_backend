@@ -141,7 +141,7 @@ DATABASES = {
 if not DEBUG:
     DATABASES = {
         "default": dj_database_url.config(
-            default=env.POSTGRES_URL,
+            default=env.get("POSTGRES_URL"),
             conn_max_age=600,
         )
     }

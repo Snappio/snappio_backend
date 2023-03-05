@@ -94,8 +94,8 @@ MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
 # create non-existing directories
-# for dir in (STATIC_ROOT, MEDIA_ROOT, *STATICFILES_DIRS):
-#     os.makedirs(dir, exist_ok=True)
+for dir in (STATIC_ROOT, MEDIA_ROOT, *STATICFILES_DIRS):
+    os.makedirs(dir, exist_ok=True)
 
 MIDDLEWARE = [
     # CorsMiddleware must be placed before CommonMiddleware

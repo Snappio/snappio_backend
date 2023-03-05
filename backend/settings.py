@@ -147,7 +147,7 @@ if not DEBUG:
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [(env.get("REDIS_URL"), 6379)],
+                "hosts": [(env.get("REDIS_URL"),)],
             },
         },
     }

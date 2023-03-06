@@ -29,5 +29,8 @@ class Post(models.Model):
         _("PostImage"), upload_to=upload_to, blank=True, null=True
     )
 
+    class Meta:
+        ordering = ["-timestamp"]
+
     def __str__(self):
         return f"{self.user} posted at {self.timestamp}"

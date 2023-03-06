@@ -5,8 +5,8 @@ from rest_framework.generics import (
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from .models import User
-from .permissions import IsSameUser
+from .models import Post, User
+from .permissions import IsPostAuthorOrReadOnly, IsSameUser
 from .serializers import PostSerializer, UserSerializer
 
 
@@ -27,9 +27,7 @@ class PostList(ListCreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
-
-    def get_queryset(self):
-        return self.request.user.posts.all()
+    queryset = Post.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -37,11 +35,9 @@ class PostList(ListCreateAPIView):
 
 class PostDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsPostAuthorOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
-
-    def get_queryset(self):
-        return self.request.user.posts.all()
+    queryset = Post.objects.all()
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)

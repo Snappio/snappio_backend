@@ -34,9 +34,4 @@ class PostSerializer(ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ["user", "content", "timestamp", "image"]
-
-    def save(self, *args, **kwargs):
-        if self.instance.image:
-            self.instance.image.delete()
-        return super().save(*args, **kwargs)
+        fields = ["id", "user", "content", "timestamp", "image"]

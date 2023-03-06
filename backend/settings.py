@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
+    "drf_spectacular",
     # local apps
     "backend.snappio",
     "backend.chat",
@@ -66,6 +67,7 @@ AUTH_USER_MODEL = "snappio.User"
 
 # https://dev.to/djangotricks/how-to-upload-a-file-using-django-rest-framework-1kgf
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -79,8 +81,22 @@ REST_FRAMEWORK = {
     # ],
 }
 
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Snappio API",
+    "DESCRIPTION": "Snappio API",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # generate appropriate tags for each endpoint
+    "SCHEMA_PATH_PREFIX": "/api/v[0-9]",
+    "PREPROCESSING_HOOKS": [
+        # remove duplicated {format}-suffix operations
+        # https://drf-spectacular.readthedocs.io/en/latest/customization.html#customization-preprocessing-hooks
+        "drf_spectacular.hooks.preprocess_exclude_path_format",
+    ],
+}
+
 SIMPLE_JWT = {
-    # increase access token lifetime
+    # increase access token lifetime for development
     "ACCESS_TOKEN_LIFETIME": timedelta(days=30)
 }
 

@@ -41,6 +41,7 @@ whitenoise = {extras = ["brotli"], version = "^6.4.0"}
 channels = "^4.0.0"
 daphne = "^4.0.0"
 channels-redis = "^4.0.0"
+drf-spectacular = "^0.26.0"
 
 
 [tool.poetry.group.dev.dependencies]

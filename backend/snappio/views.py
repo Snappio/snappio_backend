@@ -1,13 +1,10 @@
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.generics import (
-    ListAPIView,
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
 )
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import (
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly,
-)
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Post, User
 from .permissions import IsPostAuthorOrReadOnly, IsSameUser
@@ -34,18 +31,6 @@ class UserDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
 
 
-class UserPosts(ListAPIView):
-    """
-    List all posts of a user.
-    """
-
-    serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return Post.objects.filter(user=self.request.user)
-
-
 # Post views
 class PostList(ListCreateAPIView):
     """
@@ -55,7 +40,31 @@ class PostList(ListCreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
-    queryset = Post.objects.all()
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned posts to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Post.objects.all()
+        username = self.request.query_params.get("username", None)
+        if username is not None:
+            queryset = queryset.filter(user__username=username)
+        return queryset
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="username",
+                location=OpenApiParameter.QUERY,
+                description="Filter posts by username",
+                required=False,
+                type=str,
+            )
+        ]
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

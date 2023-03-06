@@ -12,6 +12,7 @@ urlpatterns = [
     # users
     path("users/", views.UserList.as_view()),
     path("users/<int:pk>/", views.UserDetail.as_view()),
+    path("users/<int:pk>/posts/", views.UserPosts.as_view()),
     # posts
     path("posts/", views.PostList.as_view()),
     path("posts/<int:pk>/", views.PostDetail.as_view()),

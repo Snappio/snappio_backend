@@ -1,10 +1,13 @@
 import json
 
+from channels.consumer import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer, DenyConnection
+
+from ..snappio.models import User
 
 
 class BaseConsumer(AsyncWebsocketConsumer):
-    def set_room_group_name(self):
+    async def set_room_group_name(self):
         """
         Set attributes for:
         self.room_name
@@ -14,7 +17,7 @@ class BaseConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         try:
-            self.set_room_group_name()
+            await self.set_room_group_name()
         except Exception:
             return await self.close(code=1000)
         # Join room group
@@ -48,8 +51,17 @@ class BaseConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"message": message}))
 
 
+@database_sync_to_async
+def get_user(username: str):
+    try:
+        user = User.objects.get(username=username)
+        return user
+    except Exception:
+        return None
+
+
 class UserConsumer(BaseConsumer):
-    def set_room_group_name(self):
+    async def set_room_group_name(self):
         """
         Take the usernames from the socket route
         Sort the alphabets in alphabetical order and generate the unique room name
@@ -59,12 +71,17 @@ class UserConsumer(BaseConsumer):
             raise DenyConnection("User is not authenticated")
         user1 = self.scope["user"].username  # first user (self)
         user2 = self.scope["url_route"]["kwargs"]["user"]  # client user
+        if user1 == user2:
+            raise DenyConnection("User cannot chat with self")
+        userdb = await get_user(user2)
+        if not userdb:
+            raise DenyConnection("User does not exist")
         self.room_name = "".join(sorted(user1 + user2))
         self.room_group_name = "chat_%s" % self.room_name
 
 
 class RoomConsumer(BaseConsumer):
-    def set_room_group_name(self):
+    async def set_room_group_name(self):
         """
         Take the room name from the socket route
         """

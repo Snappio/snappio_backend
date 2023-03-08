@@ -3,16 +3,19 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 
-class ChatConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
-        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
-        self.room_group_name = "chat_%s" % self.room_name
+class BaseConsumer(AsyncWebsocketConsumer):
+    def set_room_group_name(self):
+        # Set attributes for:
+        # self.room_name
+        # self.room_group_name
+        raise NotImplementedError("Should be implemented in subclass")
 
+    async def connect(self):
+        self.set_room_group_name()
         # Join room group
         await self.channel_layer.group_add(
             self.room_group_name, self.channel_name
         )
-
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -37,3 +40,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({"message": message}))
+
+
+class UserConsumer(BaseConsumer):
+    def set_room_group_name(self):
+        """
+        Take the usernames from the socket route
+        Sort the alphabets in alphabetical order and generate the unique room name
+        since usernames are unique
+        """
+        user1 = self.scope["url_route"]["kwargs"]["user1"]
+        user2 = self.scope["url_route"]["kwargs"]["user2"]
+        self.room_name = "".join(sorted(user1 + user2))
+        self.room_group_name = "chat_%s" % self.room_name
+
+
+class RoomConsumer(BaseConsumer):
+    def set_room_group_name(self):
+        """
+        Take the room name from the socket route
+        """
+        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
+        self.room_group_name = "chat_%s" % self.room_name

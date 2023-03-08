@@ -2,8 +2,6 @@ from channels.db import database_sync_to_async
 from django.contrib.auth.models import AnonymousUser
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from ..snappio.models import User
-
 JWT_AUTH = JWTAuthentication()
 
 
@@ -12,7 +10,7 @@ def get_user(token: str):
     try:
         validated_token = JWT_AUTH.get_validated_token(token)
         return JWT_AUTH.get_user(validated_token)
-    except User.DoesNotExist:
+    except Exception:
         return AnonymousUser()
 
 
@@ -29,12 +27,18 @@ class TokenAuthMiddleware:
         # Look up user from query string (you should also do things like
         # checking if it is a valid user ID, or if scope["user"] is already
         # populated).
-        try:
-            token = scope["headers"][0][1]
+        # find the authorization header
+        headers = scope["headers"]
+        user = AnonymousUser()
+        token = None
+        # get the token from the header
+        for header in headers:
+            if header[0] == b"authorization":
+                token = header[1]
+                break
+        if token:
             token = token.split(b" ")[1]
-        except IndexError:
-            raise IndexError("Token not found")
-        user = await get_user(token)
+            user = await get_user(token)
         scope["user"] = user
 
         return await self.app(scope, receive, send)

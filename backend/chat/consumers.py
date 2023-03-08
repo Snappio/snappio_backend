@@ -1,17 +1,22 @@
 import json
 
-from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer, DenyConnection
 
 
 class BaseConsumer(AsyncWebsocketConsumer):
     def set_room_group_name(self):
-        # Set attributes for:
-        # self.room_name
-        # self.room_group_name
+        """
+        Set attributes for:
+        self.room_name
+        self.room_group_name
+        """
         raise NotImplementedError("Should be implemented in subclass")
 
     async def connect(self):
-        self.set_room_group_name()
+        try:
+            self.set_room_group_name()
+        except Exception:
+            return await self.close(code=1000)
         # Join room group
         await self.channel_layer.group_add(
             self.room_group_name, self.channel_name
@@ -20,9 +25,10 @@ class BaseConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         # Leave room group
-        await self.channel_layer.group_discard(
-            self.room_group_name, self.channel_name
-        )
+        if hasattr(self, "room_group_name"):
+            await self.channel_layer.group_discard(
+                self.room_group_name, self.channel_name
+            )
 
     # Receive message from WebSocket
     async def receive(self, text_data):
@@ -49,8 +55,10 @@ class UserConsumer(BaseConsumer):
         Sort the alphabets in alphabetical order and generate the unique room name
         since usernames are unique
         """
-        user1 = self.scope["url_route"]["kwargs"]["user1"]
-        user2 = self.scope["url_route"]["kwargs"]["user2"]
+        if self.scope["user"].is_anonymous:
+            raise DenyConnection("User is not authenticated")
+        user1 = self.scope["user"].username  # first user (self)
+        user2 = self.scope["url_route"]["kwargs"]["user"]  # client user
         self.room_name = "".join(sorted(user1 + user2))
         self.room_group_name = "chat_%s" % self.room_name
 

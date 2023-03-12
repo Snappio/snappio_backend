@@ -7,7 +7,9 @@ from .models import Post, User
 class UserSerializer(ModelSerializer):
     # add explicit reverse relationship to posts
     posts = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Post.objects.all()
+        many=True,
+        queryset=Post.objects.all(),
+        required=False,  # required=False is required for POST requests
     )
 
     class Meta:

@@ -1,10 +1,14 @@
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.generics import (
     ListCreateAPIView,
+    RetrieveAPIView,
     RetrieveUpdateDestroyAPIView,
 )
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import (
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
 
 from .models import Post, User
 from .permissions import IsPostAuthorOrReadOnly, IsSameUser
@@ -29,6 +33,19 @@ class UserDetail(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly, IsSameUser]
     serializer_class = UserSerializer
+
+
+class UserProfile(RetrieveAPIView):
+    """
+    Retrieve a user's profile.
+    """
+
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated, IsSameUser]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
 
 
 # Post views

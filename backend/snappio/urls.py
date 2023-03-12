@@ -11,6 +11,7 @@ from . import views
 urlpatterns = [
     # users
     path("users/", views.UserList.as_view()),
+    path("users/profile/", views.UserProfile.as_view()),
     path("users/<int:pk>/", views.UserDetail.as_view()),
     # posts
     path("posts/", views.PostList.as_view()),

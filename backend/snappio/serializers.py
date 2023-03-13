@@ -5,17 +5,18 @@ from .models import Post, User
 
 
 class UserSerializer(ModelSerializer):
-    # add explicit reverse relationship to posts
-    posts = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=Post.objects.all(),
-        required=False,  # required=False is required for POST requests
-    )
+    # if required, add explicit reverse relationship
+    # to posts with PrimaryKeyRelatedField
 
     class Meta:
         model = User
-        extra_kwargs = {"password": {"write_only": True}}
-        fields = ("id", "username", "email", "name", "password", "posts")
+        extra_kwargs = {
+            "password": {"write_only": True},
+            "username": {"required": True},
+            "email": {"write_only": True},
+        }
+
+        fields = ("id", "username", "email", "name", "password")
 
     def create(self, validated_data):
         user = User(

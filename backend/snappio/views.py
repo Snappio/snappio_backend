@@ -1,7 +1,6 @@
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.generics import (
     ListCreateAPIView,
-    RetrieveAPIView,
     RetrieveUpdateDestroyAPIView,
 )
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -25,19 +24,9 @@ class UserList(ListCreateAPIView):
     serializer_class = UserSerializer
 
 
-class UserDetail(RetrieveUpdateDestroyAPIView):
+class UserProfile(RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, update or delete a user instance.
-    """
-
-    queryset = User.objects.all()
-    permission_classes = [IsAuthenticatedOrReadOnly, IsSameUser]
-    serializer_class = UserSerializer
-
-
-class UserProfile(RetrieveAPIView):
-    """
-    Retrieve a user's profile.
+    Retrieve, or modify a user's profile.
     """
 
     queryset = User.objects.all()

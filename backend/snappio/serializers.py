@@ -5,9 +5,6 @@ from .models import Post, User
 
 
 class UserSerializer(ModelSerializer):
-    # if required, add explicit reverse relationship
-    # to posts with PrimaryKeyRelatedField
-
     class Meta:
         model = User
         extra_kwargs = {
@@ -28,6 +25,24 @@ class UserSerializer(ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
+
+
+class UserProfileSerializer(UserSerializer):
+    """
+    Return user profile with posts and additional details.
+    """
+
+    # add explicit reverse relationship to posts
+    posts = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Post.objects.all(),
+        required=False,  # required=False is required for POST requests
+    )
+
+    class Meta:
+        model = User
+        extra_kwargs = {"password": {"write_only": True}}
+        fields = ("id", "username", "email", "name", "password", "posts")
 
 
 class PostSerializer(ModelSerializer):

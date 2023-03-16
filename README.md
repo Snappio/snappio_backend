@@ -24,13 +24,13 @@ Few of the available apis are listed below:
 
 #### Get all users
 
-```http
+```
   GET /api/v1/users/
 ```
 
 #### Get user details
 
-```http
+```
   GET /api/v1/users/profile/
 ```
 
@@ -40,7 +40,7 @@ Few of the available apis are listed below:
 
 #### Get post details
 
-```http
+```
   GET /api/v1/posts?username=${username}
 ```
 

@@ -22,7 +22,7 @@ class Post(models.Model):
     )
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    image = models.URLField(max_length=200, blank=True, null=True)
+    image = models.CharField(max_length=230, blank=True, null=True)
 
     class Meta:
         ordering = ["-timestamp"]

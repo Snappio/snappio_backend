@@ -186,6 +186,18 @@ if not DEBUG:
         )
     }
 
+# Firebase Configuration
+FIREBASE_CONFIG = {
+    "apiKey": env.get("FIRE_APIKEY"),
+    "authDomain": env.get("FIRE_AUTHDOMAIN"),
+    "projectId": env.get("FIRE_PROJECTID"),
+    "storageBucket": env.get("FIRE_STORAGEBUCKET"),
+    "messagingSenderId": env.get("FIRE_MESSAGINGSENDER"),
+    "appId": env.get("FIRE_APPID"),
+    "measurementId": env.get("FIRE_MEASUREMENTID"),
+    "databaseURL": None,
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 

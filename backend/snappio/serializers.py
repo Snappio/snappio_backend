@@ -45,11 +45,22 @@ class UserProfileSerializer(UserSerializer):
         fields = ("id", "username", "email", "name", "password", "posts")
 
 
-class PostSerializer(ModelSerializer):
+class PostCreateSerializer(ModelSerializer):
+    # save the user who created the post, passed in `preform_create` method
+    # of PostList view, not used to update model
+    user = serializers.ReadOnlyField(source="user.username")
+    uploadImage = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Post
+        fields = ["id", "user", "content", "timestamp", "image", "uploadImage"]
+
+
+class PostViewSerializer(ModelSerializer):
     # save the user who created the post, passed in `preform_create` method
     # of PostList view, not used to update model
     user = serializers.ReadOnlyField(source="user.username")
 
     class Meta:
         model = Post
-        fields = ["id", "user", "content", "timestamp", "image"]
+        fields = "__all__"

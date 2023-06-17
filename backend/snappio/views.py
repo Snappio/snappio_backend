@@ -11,7 +11,12 @@ from rest_framework.permissions import (
 
 from .models import Post, User
 from .permissions import IsPostAuthorOrReadOnly, IsSameUser
-from .serializers import PostSerializer, UserProfileSerializer, UserSerializer
+from .serializers import (
+    PostCreateSerializer,
+    PostViewSerializer,
+    UserProfileSerializer,
+    UserSerializer,
+)
 
 
 # User views
@@ -42,15 +47,37 @@ class UserProfile(RetrieveUpdateDestroyAPIView):
         return self.request.user
 
 
+import pyrebase
+from django.contrib.auth.models import timezone
+
+from backend.settings import FIREBASE_CONFIG
+
+firebase = pyrebase.initialize_app(FIREBASE_CONFIG)
+storage = firebase.storage()
+
+
+def upload_to(instance, filename):
+    now = timezone.now()
+    milliseconds = now.microsecond // 1000
+    post_storagename = f"posts/{instance.request.user}/{now:%Y%m%d%H%M%S}{milliseconds}{filename}"
+    storage.child(post_storagename).put(instance.request.FILES["uploadImage"])
+    url = storage.child(post_storagename).get_url(None)
+    return url
+
+
 # Post views
 class PostList(ListCreateAPIView):
     """
     List all posts, or create a new post.
     """
 
-    serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return PostCreateSerializer
+        return PostViewSerializer
 
     def get_queryset(self):
         """
@@ -78,7 +105,10 @@ class PostList(ListCreateAPIView):
         return super().get(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(
+            user=self.request.user,
+            image=upload_to(self, self.request.FILES.get("uploadImage")),
+        )
 
 
 class PostDetail(RetrieveUpdateDestroyAPIView):
@@ -86,10 +116,14 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
     Retrieve, update or delete a post instance.
     """
 
-    serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsPostAuthorOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
     queryset = Post.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method in ("PUT", "PATCH"):
+            return PostCreateSerializer
+        return PostViewSerializer
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)

@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser, timezone
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -15,12 +15,6 @@ class User(AbstractUser):
         return f"{self.email}"
 
 
-def upload_to(instance, filename):
-    now = timezone.now()
-    milliseconds = now.microsecond // 1000
-    return f"posts/{instance.user}/{now:%Y%m%d%H%M%S}{milliseconds}{filename}"
-
-
 class Post(models.Model):
     # related_name is field name in User model
     user = models.ForeignKey(
@@ -28,12 +22,10 @@ class Post(models.Model):
     )
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(
-        _("PostImage"), upload_to=upload_to, blank=True, null=True
-    )
+    image = models.URLField(blank=True, null=True)
 
     class Meta:
         ordering = ["-timestamp"]
 
     def __str__(self):
-        return f"{self.user} posted at {self.timestamp}"
+        return f"{self.user} posted at {self.timestamp}, image: {self.image}"

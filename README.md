@@ -1,6 +1,8 @@
 # Snappio Backend | [DEMO](https://api-snappio.onrender.com/api/v1/users/)
 Backend for the Snappio, a _social media / chat application_ built with **flutter** (frontend) and **django rest framework** (backend).
 
+# trigger
+
 ### Features include:
 - Realtime chatting with web-sockets _(django channels)_
 - JWT Authentication with strict user permissions

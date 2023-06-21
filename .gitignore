@@ -21,3 +21,4 @@ migrations/
 staticfiles/
 site_static/
 media/
+.vercel

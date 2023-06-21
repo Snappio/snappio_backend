@@ -3,9 +3,10 @@
 # exit on error
 set -o errexit
 
-pip install --upgrade poetry
-poetry install
+# pip install --upgrade poetry
+# poetry install
+pip install -r requirements.txt
 
-poetry run ./manage.py collectstatic --no-input
-poetry run ./manage.py makemigrations snappio
-poetry run ./manage.py migrate
+./manage.py collectstatic --no-input
+./manage.py makemigrations snappio
+./manage.py migrate

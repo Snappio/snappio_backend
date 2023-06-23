@@ -1,9 +1,6 @@
-FROM python:3.10.9 as BASE
-
+FROM python:3
 
 WORKDIR /app
-
-FROM python:3.10.10-slim-buster
 
 RUN apt update -y && apt upgrade -y
 RUN apt install -y python3-dev libpq-dev

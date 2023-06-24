@@ -49,6 +49,7 @@ class PostCreateSerializer(ModelSerializer):
     # save the user who created the post, passed in `preform_create` method
     # of PostList view, not used to update model
     user = serializers.ReadOnlyField(source="user.username")
+    name = serializers.ReadOnlyField(source="user.name")
     uploadImage = serializers.ReadOnlyField()
 
     class Meta:
@@ -60,6 +61,7 @@ class PostViewSerializer(ModelSerializer):
     # save the user who created the post, passed in `preform_create` method
     # of PostList view, not used to update model
     user = serializers.ReadOnlyField(source="user.username")
+    name = serializers.ReadOnlyField(source="user.name")
 
     class Meta:
         model = Post

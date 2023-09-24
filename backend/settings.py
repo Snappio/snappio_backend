@@ -186,6 +186,13 @@ if not DEBUG:
         )
     }
 
+# Cloudinary Configuration
+CLOUDINARY_CONFIG = {
+    "cloud_name": env.get("CLOUD_NAME"),
+    "api_key": env.get("CLOUD_APIKEY"),
+    "api_secret": env.get("CLOUD_SECRET"),
+}
+
 # Firebase Configuration
 FIREBASE_CONFIG = {
     "apiKey": env.get("FIRE_APIKEY"),

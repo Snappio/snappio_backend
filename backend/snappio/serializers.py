@@ -54,7 +54,15 @@ class PostCreateSerializer(ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ["id", "user", "content", "timestamp", "image", "uploadImage"]
+        fields = [
+            "id",
+            "name",
+            "user",
+            "content",
+            "timestamp",
+            "image",
+            "uploadImage",
+        ]
 
 
 class PostViewSerializer(ModelSerializer):

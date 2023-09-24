@@ -47,21 +47,17 @@ class UserProfile(RetrieveUpdateDestroyAPIView):
         return self.request.user
 
 
-import pyrebase
-from django.contrib.auth.models import timezone
+import cloudinary.uploader
 
-from backend.settings import FIREBASE_CONFIG
+from backend.settings import CLOUDINARY_CONFIG
 
-firebase = pyrebase.initialize_app(FIREBASE_CONFIG)
-storage = firebase.storage()
+cloudinary.config(**CLOUDINARY_CONFIG)
 
 
 def upload_to(instance, filename):
-    now = timezone.now()
-    milliseconds = now.microsecond // 1000
-    post_storagename = f"posts/{instance.request.user}/{now:%Y%m%d%H%M%S}{milliseconds}{filename}"
-    storage.child(post_storagename).put(instance.request.FILES["uploadImage"])
-    url = storage.child(post_storagename).get_url(None)
+    url = cloudinary.uploader.upload(instance.request.FILES["uploadImage"])[
+        "secure_url"
+    ]
     return url
 
 
